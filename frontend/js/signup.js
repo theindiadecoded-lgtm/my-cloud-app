@@ -11,20 +11,24 @@ form.addEventListener('submit', async (e) => {
   };
 
   try {
-    const res = await fetch('http://localhost:5000/api/auth/signup', {
+    const res = await fetch('/api/auth/signup', {  // <-- Changed to relative path
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
 
     const result = await res.json();
+
     if (res.ok) {
       message.innerText = "Signup successful! Redirecting to login...";
-      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+      setTimeout(() => { 
+        window.location.href = 'index.html'; 
+      }, 1500);
     } else {
       message.innerText = result.msg || 'Signup failed';
     }
   } catch (err) {
+    console.error(err);
     message.innerText = 'Error connecting to server';
   }
 });
