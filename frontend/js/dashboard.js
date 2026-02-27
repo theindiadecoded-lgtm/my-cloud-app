@@ -13,7 +13,7 @@ uploadForm.addEventListener('submit', async (e) => {
   formData.append('file', file);
 
   try {
-    const res = await fetch('/api/files/upload', {  // <-- Changed to relative path
+    const res = await fetch('/api/files/upload', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData
@@ -31,7 +31,7 @@ uploadForm.addEventListener('submit', async (e) => {
 // Load user's files
 async function loadFiles() {
   try {
-    const res = await fetch('/api/files', {  // <-- Changed to relative path
+    const res = await fetch('/api/files', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
@@ -54,7 +54,7 @@ async function deleteFile(id) {
   if (!confirm('Are you sure you want to delete this file?')) return;
 
   try {
-    const res = await fetch(`/api/files/${id}`, {  // <-- Changed to relative path
+    const res = await fetch(`/api/files/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
