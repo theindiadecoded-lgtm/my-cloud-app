@@ -12,41 +12,60 @@ uploadForm.addEventListener('submit', async (e) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await fetch('http://localhost:5000/api/files/upload', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}` },
-    body: formData
-  });
+  try {
+    const res = await fetch('/api/files/upload', {  // <-- Changed to relative path
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
 
-  const data = await res.json();
-  if (res.ok) loadFiles();
-  else alert(data.msg || 'Upload failed');
+    const data = await res.json();
+    if (res.ok) loadFiles();
+    else alert(data.msg || 'Upload failed');
+  } catch (err) {
+    console.error(err);
+    alert('Error connecting to server');
+  }
 });
 
 // Load user's files
 async function loadFiles() {
-  const res = await fetch('http://localhost:5000/api/files', {
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
-  const files = await res.json();
-  filesList.innerHTML = files.map(f => `
-    <div class="file-item">
-      <p>${f.filename}</p>
-      <a href="${f.filePath}" target="_blank">View</a>
-      <button onclick="deleteFile('${f._id}')">Delete</button>
-    </div>
-  `).join('');
+  try {
+    const res = await fetch('/api/files', {  // <-- Changed to relative path
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const files = await res.json();
+    filesList.innerHTML = files.map(f => `
+      <div class="file-item">
+        <p>${f.filename}</p>
+        <a href="${f.filePath}" target="_blank">View</a>
+        <button onclick="deleteFile('${f._id}')">Delete</button>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error(err);
+    alert('Error loading files');
+  }
 }
 
 // Delete file
 async function deleteFile(id) {
   if (!confirm('Are you sure you want to delete this file?')) return;
-  const res = await fetch(`http://localhost:5000/api/files/${id}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
-  const data = await res.json();
-  loadFiles();
+
+  try {
+    const res = await fetch(`/api/files/${id}`, {  // <-- Changed to relative path
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (res.ok) loadFiles();
+    else alert(data.msg || 'Delete failed');
+  } catch (err) {
+    console.error(err);
+    alert('Error connecting to server');
+  }
 }
 
 // Logout
@@ -55,4 +74,5 @@ logoutBtn.addEventListener('click', () => {
   window.location.href = 'index.html';
 });
 
+// Initial load
 loadFiles();
