@@ -11,7 +11,7 @@ form.addEventListener('submit', async (e) => {
   };
 
   try {
-    const res = await fetch('/api/auth/signup', {  // <-- Changed to relative path
+    const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -20,9 +20,10 @@ form.addEventListener('submit', async (e) => {
     const result = await res.json();
 
     if (res.ok) {
-      message.innerText = "Signup successful! Redirecting to login...";
+      localStorage.setItem('token', result.token); // <-- store token
+      message.innerText = "Signup successful! Redirecting to dashboard...";
       setTimeout(() => { 
-        window.location.href = 'index.html'; 
+        window.location.href = 'dashboard.html'; 
       }, 1500);
     } else {
       message.innerText = result.msg || 'Signup failed';
