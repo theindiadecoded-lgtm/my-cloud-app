@@ -1,29 +1,28 @@
-const form = document.getElementById('loginForm');
-const message = document.getElementById('message');
+const loginForm = document.getElementById('loginForm');
 
-form.addEventListener('submit', async (e) => {
+loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const data = {
-    email: document.getElementById('email').value,
-    password: document.getElementById('password').value
-  };
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   try {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
+    const res = await fetch('/api/auth/login', {  // <-- Relative path
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ email, password })
     });
 
-    const result = await res.json();
+    const data = await res.json();
+
     if (res.ok) {
-      localStorage.setItem('token', result.token);
+      localStorage.setItem('token', data.token);
       window.location.href = 'dashboard.html';
     } else {
-      message.innerText = result.msg || 'Login failed';
+      alert(data.msg || 'Login failed');
     }
   } catch (err) {
-    message.innerText = 'Error connecting to server';
+    console.error(err);
+    alert('Error connecting to server');
   }
 });
